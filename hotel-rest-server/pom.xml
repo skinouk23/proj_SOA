@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.mhotel</groupId>
+        <artifactId>hotel-soa-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>hotel-rest-server</artifactId>
+    <name>Archetype - hotel-rest-server</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <!-- Module commun (vos données) -->
+        <dependency>
+            <groupId>com.mhotel</groupId>
+            <artifactId>hotel-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Jersey : Serveur HTTP intégré (JDK Http) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-jdk-http</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <!-- Jersey : Le coeur du framework REST -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <!-- Jersey : Injection de dépendance (Obligatoire pour que ça démarre) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <!-- Jersey : Support XML -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.5</version>
+        </dependency>
+    </dependencies>
+</project>
