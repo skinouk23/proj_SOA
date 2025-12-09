@@ -1,21 +1,28 @@
 package com.mhotel.rest.Hotel;
 
 import com.mhotel.model.Hotel;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
 @Path("/hotels")
 public class HotelResource {
+
     @GET
-    @Produces(MediaType.APPLICATION_XML) // On veut du XML
+    @Produces(MediaType.APPLICATION_XML)
     public List<Hotel> getHotels() {
-        return Arrays.asList(
-                new Hotel("1", "Ibis Tunis", 120.0),
-                new Hotel("2", "Marriott Sousse", 250.0)
-        );
+        return com.mhotel.model.DataStore.getInstance().getHotels();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    public String addHotel(Hotel hotel) {
+        // AJOUTEZ CETTE LIGNE DE DEBUG :
+        System.out.println(">>> REÇU HOTEL : " + hotel.getNom() + " Prix: " + hotel.getPrix());
+
+        com.mhotel.model.DataStore.getInstance().addHotel(hotel);
+        return "Hotel ajouté";
     }
 }
