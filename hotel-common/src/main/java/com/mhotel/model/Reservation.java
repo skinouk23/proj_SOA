@@ -15,7 +15,7 @@ public class Reservation {
         this.clientNom = clientNom;
         this.statut = statut;
     }
-    // Getters et Setters (Alt+Insert)
+    // Getters/Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getHotelNom() { return hotelNom; }
@@ -24,7 +24,4 @@ public class Reservation {
     public void setClientNom(String clientNom) { this.clientNom = clientNom; }
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
-
-    @Override
-    public String toString() { return hotelNom + " - " + statut; }
 }

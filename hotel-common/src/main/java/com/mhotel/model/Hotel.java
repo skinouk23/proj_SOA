@@ -1,21 +1,19 @@
 package com.mhotel.model;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement // Indispensable pour la conversion XML
+@XmlRootElement
 public class Hotel {
     private String id;
     private String nom;
     private double prix;
 
-    public Hotel() {} // Constructeur vide obligatoire
-
+    public Hotel() {} // Obligatoire
     public Hotel(String id, String nom, double prix) {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
     }
-    // Générez les Getters et Setters (Alt+Insert)
+    // Getters/Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getNom() { return nom; }

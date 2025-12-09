@@ -94,3 +94,35 @@
     -fx-text-fill: #ef233c; /* Texte rouge au survol */
     -fx-cursor: hand;
 }
+/* --- BOITES DE DIALOGUE (Alerts) --- */
+.dialog-pane {
+    -fx-background-color: #2b2d42; /* Même fond que l'app */
+    -fx-border-color: #ef233c;      /* Bordure rouge subtile */
+    -fx-border-width: 2px;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #2b2d42;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.dialog-pane .content {
+    -fx-background-color: #2b2d42;
+}
+
+/* --- LISTE RÉSERVATION (Style Spécifique) --- */
+.history-list .list-cell {
+    -fx-background-color: #3f4258; /* Légèrement différent du catalogue */
+    -fx-border-left-color: #3a86ff; /* Bordure bleue pour distinguer */
+    -fx-border-left-width: 5px;     /* Bande bleue à gauche */
+    -fx-text-fill: #edf2f4;
+}
+
+.history-list .list-cell:filled:hover {
+    -fx-background-color: #3a86ff;
+    -fx-text-fill: white;
+}
