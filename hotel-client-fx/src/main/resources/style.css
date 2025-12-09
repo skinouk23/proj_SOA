@@ -1,52 +1,96 @@
+/* --- CONFIGURATION GLOBALE --- */
 .root {
-    -fx-background-color: #2b2b2b;
+    -fx-background-color: #2b2d42; /* Gris Nuit profond */
     -fx-font-family: 'Segoe UI', sans-serif;
 }
 
+/* --- TITRES --- */
 .label {
-    -fx-text-fill: #e0e0e0;
+    -fx-text-fill: #edf2f4;
     -fx-font-size: 14px;
 }
 
-.title-label {
-    -fx-font-size: 24px;
+.header-label {
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: #4CAF50; /* Vert Néon */
-    -fx-padding: 20;
+    -fx-text-fill: #8d99ae;
+    -fx-padding: 0 0 20 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
 }
 
+/* --- BOUTONS --- */
 .button {
-    -fx-background-color: #3f3f3f;
+    -fx-background-color: #ef233c; /* Rouge moderne */
     -fx-text-fill: white;
-    -fx-border-color: #4CAF50;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20; /* Arrondi */
+    -fx-border-radius: 20;
+    -fx-padding: 10 20;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .button:hover {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: black;
+    -fx-background-color: #d90429; /* Rouge plus foncé au survol */
+    -fx-scale-x: 1.05; /* Petit effet de zoom */
+    -fx-scale-y: 1.05;
 }
 
-.text-field {
-    -fx-background-color: #3f3f3f;
-    -fx-text-fill: white;
-    -fx-border-color: #666;
-    -fx-border-radius: 3;
+.button:pressed {
+    -fx-background-color: #a80018;
 }
 
+/* Bouton Spécial (Ex: Actualiser) - On peut surcharger */
+.button-action {
+    -fx-background-color: #3a86ff; /* Bleu */
+}
+.button-action:hover {
+    -fx-background-color: #0064c9;
+}
+
+/* --- CHAMPS DE TEXTE (Inputs) --- */
+.text-field, .password-field, .text-area {
+    -fx-background-color: #8d99ae;
+    -fx-text-fill: #2b2d42;
+    -fx-prompt-text-fill: #4a4e69;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: #edf2f4;
+    -fx-border-color: #3a86ff;
+    -fx-border-width: 2px;
+}
+
+/* --- LIST VIEW (Le catalogue) --- */
 .list-view {
-    -fx-background-color: #333;
-    -fx-control-inner-background: #333;
-}
-
-.list-cell:filled:selected, .list-cell:filled:hover {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: black;
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 10;
 }
 
 .list-cell {
-    -fx-text-fill: white;
-    -fx-padding: 10;
+    -fx-background-color: #8d99ae; /* Couleur des cartes */
+    -fx-text-fill: #2b2d42;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 0 0 5 0; /* Marge entre les éléments via border invisible */
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: #edf2f4;
+    -fx-text-fill: #ef233c; /* Texte rouge au survol */
+    -fx-cursor: hand;
 }

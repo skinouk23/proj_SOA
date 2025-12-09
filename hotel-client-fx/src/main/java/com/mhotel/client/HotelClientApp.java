@@ -37,23 +37,32 @@ public class HotelClientApp extends Application {
 
     // --- 1. ÉCRAN LOGIN ---
     private void showLoginScreen() {
-        VBox root = new VBox(15);
+        VBox root = new VBox(20); // Espacement vertical de 20px
         root.setAlignment(Pos.CENTER);
-        root.setStyle("-fx-background-color: #2b2b2b;");
+        root.setPadding(new Insets(40)); // Marge interne globale
 
-        Label lblTitle = new Label("Connexion Hotel SOA");
-        lblTitle.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+        // Titre
+        Label lblTitle = new Label("CONNEXION HOTEL");
+        lblTitle.getStyleClass().add("header-label"); // Application du style CSS
 
-        TextField txtUser = new TextField("client"); // defaut
+        // Champs
+        TextField txtUser = new TextField("client");
+        txtUser.setPromptText("Nom d'utilisateur");
+        txtUser.setMaxWidth(300); // Pour ne pas qu'il prenne toute la largeur
+
         PasswordField txtPass = new PasswordField();
-        txtPass.setText("client"); // defaut
+        txtPass.setText("client");
+        txtPass.setPromptText("Mot de passe");
+        txtPass.setMaxWidth(300);
 
-        Button btnLogin = new Button("Se connecter");
-        btnLogin.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        // Bouton
+        Button btnLogin = new Button("SE CONNECTER");
+        btnLogin.setPrefWidth(200); // Largeur du bouton
 
         Label lblError = new Label();
-        lblError.setStyle("-fx-text-fill: red;");
+        lblError.setStyle("-fx-text-fill: #ef233c; -fx-font-weight: bold;"); // Rouge erreur direct
 
+        // Action
         btnLogin.setOnAction(e -> {
             String role = callSoapAuth(txtUser.getText(), txtPass.getText());
             if ("ADMIN".equals(role)) {
@@ -63,13 +72,18 @@ public class HotelClientApp extends Application {
                 currentUser = txtUser.getText();
                 showClientScreen();
             } else {
-                lblError.setText("Identifiants incorrects (Essayer admin/admin ou client/client)");
+                lblError.setText("Accès refusé. Vérifiez vos identifiants.");
             }
         });
 
         root.getChildren().addAll(lblTitle, txtUser, txtPass, btnLogin, lblError);
-        Scene scene = new Scene(root, 400, 300);
-        primaryStage.setTitle("Login");
+
+        // Création de la scène avec taille fixe
+        Scene scene = new Scene(root, 500, 450);
+        // Chargement du CSS
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        primaryStage.setTitle("Hotel App - Login");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -77,54 +91,165 @@ public class HotelClientApp extends Application {
     // --- 2. ÉCRAN CLIENT ---
     private void showClientScreen() {
         BorderPane root = new BorderPane();
-        root.setTop(new Label("Bienvenue Client : " + currentUser));
+        root.setPadding(new Insets(20));
 
-        // Liste Hotels (REST)
+        // --- EN-TÊTE ---
+        HBox header = new HBox();
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(0, 0, 20, 0));
+        Label title = new Label("Espace Client : " + currentUser);
+        title.getStyleClass().add("header-label");
+        header.getChildren().add(title);
+        root.setTop(header);
+
+        // --- CENTRE (Liste) ---
+        VBox centerLayout = new VBox(15);
+
+        // 1. On déclare la liste AVANT le bouton
         ListView<String> listHotels = new ListView<>();
-        Button btnRefresh = new Button("Actualiser Catalogue");
+        VBox.setVgrow(listHotels, Priority.ALWAYS);
+
+        // 2. Le bouton utilise maintenant la bonne variable "listHotels"
+        Button btnRefresh = new Button("Actualiser le Catalogue");
+        btnRefresh.getStyleClass().add("button-action");
+        btnRefresh.setMaxWidth(Double.MAX_VALUE);
         btnRefresh.setOnAction(e -> loadHotelsRest(listHotels));
 
-        // Réservation
-        Button btnBook = new Button("Réserver Sélection");
+        centerLayout.getChildren().addAll(btnRefresh, listHotels);
+        root.setCenter(centerLayout);
+
+        // --- BAS (Actions) ---
+        VBox bottomLayout = new VBox(15);
+        bottomLayout.setPadding(new Insets(20, 0, 0, 0));
+
+        Button btnBook = new Button("Réserver l'hôtel sélectionné");
+        btnBook.setMaxWidth(Double.MAX_VALUE);
         btnBook.setOnAction(e -> {
             String selected = listHotels.getSelectionModel().getSelectedItem();
             if(selected != null) callSoapBooking(selected);
+            else new Alert(Alert.AlertType.WARNING, "Veuillez choisir un hôtel").show();
         });
 
-        // Historique
         TextArea historyArea = new TextArea();
+        historyArea.setPrefHeight(100);
+        historyArea.setEditable(false);
+        historyArea.setPromptText("L'historique s'affichera ici...");
+
         Button btnHistory = new Button("Voir mes réservations");
+        btnHistory.getStyleClass().add("button-action");
+        btnHistory.setMaxWidth(Double.MAX_VALUE);
         btnHistory.setOnAction(e -> loadHistorySoap(historyArea));
 
-        VBox center = new VBox(10, btnRefresh, listHotels, btnBook, btnHistory, historyArea);
-        center.setPadding(new Insets(10));
-        root.setCenter(center);
+        bottomLayout.getChildren().addAll(btnBook, btnHistory, historyArea);
+        root.setBottom(bottomLayout);
 
-        primaryStage.setScene(new Scene(root, 600, 500));
+        Scene scene = new Scene(root, 600, 700);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        primaryStage.setTitle("Hotel App - Catalogue");
+        primaryStage.setScene(scene);
     }
 
     // --- 3. ÉCRAN ADMIN ---
     private void showAdminScreen() {
-        VBox root = new VBox(15);
+        BorderPane root = new BorderPane();
         root.setPadding(new Insets(20));
-        root.setAlignment(Pos.CENTER);
 
-        Label lbl = new Label("PANEL ADMIN - Ajouter un Hôtel");
-        TextField txtId = new TextField(); txtId.setPromptText("ID");
-        TextField txtNom = new TextField(); txtNom.setPromptText("Nom Hôtel");
-        TextField txtPrix = new TextField(); txtPrix.setPromptText("Prix");
+        // --- 1. EN-TÊTE (Titre + Logout) ---
+        HBox header = new HBox();
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(0, 0, 30, 0));
+        header.setSpacing(20);
 
-        Button btnAdd = new Button("Ajouter au Catalogue (REST POST)");
+        Label title = new Label("Panneau Administrateur");
+        title.getStyleClass().add("header-label");
 
+        // Un spacer pour pousser le bouton logout à droite
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button btnLogout = new Button("Déconnexion");
+        btnLogout.getStyleClass().add("button-action"); // Style Bleu
+        btnLogout.setOnAction(e -> showLoginScreen());
+
+        header.getChildren().addAll(title, spacer, btnLogout);
+        root.setTop(header);
+
+        // --- 2. CENTRE (Formulaire d'ajout) ---
+        VBox formPanel = new VBox(20);
+        formPanel.setAlignment(Pos.CENTER);
+        // On limite la largeur pour que ça ressemble à une fiche produit
+        formPanel.setMaxWidth(400);
+        formPanel.setPadding(new Insets(30));
+        // Petit fond légèrement plus clair pour le formulaire
+        formPanel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 20;");
+
+        Label lblForm = new Label("Ajouter un nouvel hôtel");
+        lblForm.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        // Champ ID
+        VBox boxId = new VBox(5);
+        Label lblId = new Label("Identifiant Unique");
+        TextField txtId = new TextField();
+        txtId.setPromptText("Ex: 101");
+        boxId.getChildren().addAll(lblId, txtId);
+
+        // Champ Nom
+        VBox boxNom = new VBox(5);
+        Label lblNom = new Label("Nom de l'hôtel");
+        TextField txtNom = new TextField();
+        txtNom.setPromptText("Ex: Sheraton Tunis");
+        boxNom.getChildren().addAll(lblNom, txtNom);
+
+        // Champ Prix
+        VBox boxPrix = new VBox(5);
+        Label lblPrix = new Label("Prix par nuit (TND)");
+        TextField txtPrix = new TextField();
+        txtPrix.setPromptText("Ex: 250.0");
+        boxPrix.getChildren().addAll(lblPrix, txtPrix);
+
+        // Bouton d'action
+        Button btnAdd = new Button("PUBLIER L'OFFRE");
+        btnAdd.setMaxWidth(Double.MAX_VALUE); // Prend toute la largeur du formulaire
+        btnAdd.setPadding(new Insets(15));
+
+        // Logique du bouton
         btnAdd.setOnAction(e -> {
             try {
-                Hotel h = new Hotel(txtId.getText(), txtNom.getText(), Double.parseDouble(txtPrix.getText()));
+                // Vérification simple
+                if(txtId.getText().isEmpty() || txtNom.getText().isEmpty() || txtPrix.getText().isEmpty()){
+                    new Alert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs").show();
+                    return;
+                }
+
+                String id = txtId.getText();
+                String nom = txtNom.getText();
+                double prix = Double.parseDouble(txtPrix.getText());
+
+                Hotel h = new Hotel(id, nom, prix);
                 postHotelRest(h);
-            } catch (Exception ex) { ex.printStackTrace(); }
+
+                // Reset des champs après ajout
+                txtId.clear();
+                txtNom.clear();
+                txtPrix.clear();
+
+            } catch (NumberFormatException ex) {
+                new Alert(Alert.AlertType.ERROR, "Le prix doit être un nombre (ex: 120.5)").show();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
-        root.getChildren().addAll(lbl, txtId, txtNom, txtPrix, btnAdd);
-        primaryStage.setScene(new Scene(root, 600, 400));
+        formPanel.getChildren().addAll(lblForm, boxId, boxNom, boxPrix, btnAdd);
+        root.setCenter(formPanel);
+
+        // --- 3. Configuration Scène ---
+        Scene scene = new Scene(root, 700, 600);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        primaryStage.setTitle("Hotel App - Administration");
+        primaryStage.setScene(scene);
     }
 
     // --- APPELS RESEAU ---
